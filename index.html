@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פתרונות בינה מלאכותית מתקדמים</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .header .subtitle {
+            font-size: 1em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .solution-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            border: none;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .solution-card:hover::before {
+            left: 100%;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+
+        .solution-card.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);
+        }
+
+        .solution-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .solution-card p {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .solution-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .chat-interface {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            display: none;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .chat-interface.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .chat-header h3 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .chat-history {
+            max-height: 450px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .chat-history::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-history::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-history::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 20px;
+            max-width: 85%;
+            position: relative;
+            animation: messageAppear 0.3s ease-out;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-right: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+            color: #333;
+            margin-left: auto;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .input-area {
+            flex: 1;
+            min-height: 60px;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-area:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 100px;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .powered-by {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .powered-by .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin: 0 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .solution-selector {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .solution-card {
+                padding: 25px 20px;
+            }
+
+            .input-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .send-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🤖 פתרונות בינה מלאכותית</h1>
+            <p>פתרונות מתקדמים ומותאמים אישית עם AI מובילים</p>
+            <div class="subtitle">פשוט, מהיר ויעיל - בלי הגדרות מסובכות</div>
+        </div>
+
+        <div class="main-content">
+            <div class="solution-selector">
+                <button class="solution-card" data-solution="analysis">
+                    <span class="icon">📊</span>
+                    <h3>ניתוח נתונים ומחקר</h3>
+                    <p>ניתוח מתקדם של מידע עסקי, מחקרי ואקדמי עם תובנות מעמיקות ומסקנות מעשיות</p>
+                </button>
+                
+                <button class="solution-card" data-solution="writing">
+                    <span class="icon">✍️</span>
+                    <h3>כתיבה יצירתית ותוכן</h3>
+                    <p>יצירת תוכן מקצועי, מאמרים, תכנים שיווקיים ומסמכים עסקיים ברמה גבוהה</p>
+                </button>
+                
+                <button class="solution-card" data-solution="programming">
+                    <span class="icon">💻</span>
+                    <h3>פיתוח תוכנה וטכנולוגיה</h3>
+                    <p>פתרונות תכנות, ביקורת קוד, ייעוץ טכני ופיתוח יישומים מתקדמים</p>
+                </button>
+                
+                <button class="solution-card" data-solution="strategy">
+                    <span class="icon">🎯</span>
+                    <h3>ייעוץ אסטרטגי ועסקי</h3>
+                    <p>תכנון עסקי, אסטרטגיות שיווק, ניתוח תחרותי ופתרונות ניהוליים חכמים</p>
+                </button>
+            </div>
+
+            <div class="chat-interface" id="chatInterface">
+                <div class="chat-header">
+                    <h3 id="selectedSolution">בחר נושא כדי להתחיל</h3>
+                    <p>השיחה מאובטחת ופרטית - המידע שלך לא נשמר</p>
+                </div>
+
+                <div class="chat-history" id="chatHistory">
+                    <div class="message ai-message">
+                        <div>שלום! אני כאן לעזור לך בכל מה שקשור ל<span id="solutionName"></span>.</div>
+                        <div>איך אוכל לסייע לך היום? תרגיש חופשיה לשאול כל שאלה או לתאר את הבעיה שלך.</div>
+                        <div class="message-time" id="welcomeTime"></div>
+                    </div>
+                </div>
+                
+                <div class="input-section">
+                    <textarea class="input-area" id="userInput" placeholder="הקלד את השאלה או הבקשה שלך כאן. לדוגמה: 'תעזור לי לנתח את נתוני המכירות', 'כתוב לי מאמר על...', 'בדוק את הקוד הזה'..." rows="3"></textarea>
+                    <button class="send-button" id="sendButton">
+                        <span>שלח</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="powered-by">
+                מופעל על ידי
+                <span class="ai-badge">AI מתקדם</span>
+                •
+                <span class="ai-badge">עיבוד חכם</span>
+                •
+                <span class="ai-badge">תשובות מדויקות</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AIWebsite {
+            constructor() {
+                this.currentSolution = null;
+                this.chatHistory = [];
+                this.isLoading = false;
+                this.apiKey = d559de115b6f4c01a1af6d7122f5b4b4
+                this.initializeEventListeners();
+                this.updateWelcomeTime();
+            }
+
+            initializeEventListeners() {
+                // Solution card selection
+                document.querySelectorAll('.solution-card').forEach(card => {
+                    card.addEventListener('click', (e) => this.selectSolution(e.target.closest('.solution-card')));
+                });
+
+                // Send button and Enter key
+                document.getElementById('sendButton').addEventListener('click', () => this.sendMessage());
+                document.getElementById('userInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+
+                // Auto-resize textarea
+                document.getElementById('userInput').addEventListener('input', this.autoResizeTextarea);
+            }
+
+            updateWelcomeTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('he-IL', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                const welcomeTimeElement = document.getElementById('welcomeTime');
+                if (welcomeTimeElement) {
+                    welcomeTimeElement.textContent = timeString;
+                }
+            }
+
+            autoResizeTextarea(e) {
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
+            }
+
+            selectSolution(card) {
+                // Remove active class from all cards
+                document.querySelectorAll('.solution-card').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to selected card
+                card.classList.add('active');
+                
+                // Get solution info
+                this.currentSolution = card.dataset.solution;
+                const solutionTitle = card.querySelector('h3').textContent;
+                const solutionIcon = card.querySelector('.icon').textContent;
+                
+                // Update UI
+                document.getElementById('selectedSolution').innerHTML = `${solutionIcon} ${solutionTitle}`;
+                document.getElementById('solutionName').textContent = solutionTitle;
+                document.getElementById('chatInterface').classList.add('active');
+                document.getElementById('userInput').focus();
+                
+                // Reset chat history for new solution
+                this.resetChat();
+            }
+
+            resetChat() {
+                this.chatHistory = [];
+                const solutionName = document.getElementById('solutionName').textContent;
+                const chatHistory = document.getElementById('chatHistory');
+                const now = new Date().toLocaleTimeString('he-IL', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                chatHistory.innerHTML = `
+                    <div class="message ai-message">
+                        <div>שלום! אני כאן לעזור לך בכל מה שקשור ל${solutionName}.</div>
+                        <div>איך אוכל לסייע לך היום? תרגיש חופשיה לשאול כל שאלה או לתאר את הבעייה שלך.</div>
+                        <div class="message-time">${now}</div>
+                    </div>
+                `;
+            }
+
+            async sendMessage() {
+                const userInput = document.getElementById('userInput');
+                const message = userInput.value.trim();
+                
+                if (!message || this.isLoading) return;
+
+                // Add user message to chat
+                this.addMessage(message, 'user');
+                userInput.value = '';
+                userInput.style.height = 'auto';
+                this.isLoading = true;
+                this.updateSendButton();
+
+                // Show loading indicator
+                this.addMessage('מעבד את הבקשה ומכין תשובה מותאמת...', 'ai', true);
+
+                try {
+                    // Get AI response (simulate API call)
+                    const response = await this.getAIResponse(message);
+                    
+                    // Remove loading message and add real response
+                    this.removeLastMessage();
+                    this.addMessage(response, 'ai');
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.removeLastMessage();
+                    this.addMessage('מצטער, אירעה שגיאה זמנית. אנא נסה שוב או פנה לתמיכה.', 'ai');
+                } finally {
+                    this.isLoading = false;
+                    this.updateSendButton();
+                }
+            }
+
+            async getAIResponse(userMessage) {
+                // Create context-aware prompt based on selected solution
+                const solutionPrompts = {
+                    analysis: "אתה מומחה בניתוח נתונים ומחקר עם יכולות מתקדמות בסטטיסטיקה, ויזואליזציה וניתוח טרנדים. אתה מספק תובנות מעמיקות ומסקנות מעשיות.",
+                    writing: "אתה כותב מקצועי ויצירתי עם התמחות ביצירת תוכן איכותי בעברית. אתה מתמחה במאמרים, תכנים שיווקיים, מסמכים עסקיים ותוכן דיגיטלי.",
+                    programming: "אתה מפתח תוכנה מומחה עם ידע נרחב בשפות תכנות מתקדמות, ארכיטקטורות מערכת, best practices וטכנולוגיות חדישות. אתה מספק פתרונות מדויקים ויעילים.",
+                    strategy: "אתה יועץ עסקי אסטרטגי עם ניסיון רב בתכנון עסקי, אסטרטגיות שיווק, ניתוח שוק ופיתוח עסקי. אתה מספק המלצות מעשיות ומותאמות לשוק הישראלי."
+                };
+
+                const systemPrompt = solutionPrompts[this.currentSolution] || "אתה עוזר AI מקצועי ומנוסה.";
+                
+              async getAIResponse(userMessage) {
+    const solutionPrompts = {
+        analysis: "אתה מומחה בניתוח נתונים ומחקר...",
+        writing: "אתה כותב מקצועי ויצירתי...",
+        programming: "אתה מפתח תוכנה מומחה...",
+        strategy: "אתה יועץ עסקי אסטרטגי..."
+    };
+
+    const systemPrompt = solutionPrompts[this.currentSolution] || "אתה עוזר AI מקצועי.";
+
+    // דוגמה לקריאה אמיתית לGroq API:
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userMessage }
+            ],
+            max_tokens: 1000,
+            temperature: 0.7
+        })
+    });
+
+    const data = await response.json();  
+    return data.choices[0].message.content;
+}
+            addMessage(content, sender, isLoading = false) {
+                const chatHistory = document.getElementById('chatHistory');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                if (isLoading) {
+                    messageDiv.classList.add('loading');
+                }
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.textContent = content;
+                messageDiv.appendChild(contentDiv);
+                
+                if (!isLoading) {
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'message-time';
+                    timeDiv.textContent = new Date().toLocaleTimeString('he-IL', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    messageDiv.appendChild(timeDiv);
+                }
+                
+                chatHistory.appendChild(messageDiv);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+
+            removeLastMessage() {
+                const chatHistory = document.getElementById('chatHistory');
+                const lastMessage = chatHistory.lastElementChild;
+                if (lastMessage) {
+                    lastMessage.remove();
+                }
+            }
+
+            updateSendButton() {
+                const sendButton = document.getElementById('sendButton');
+                const span = sendButton.querySelector('span');
+                sendButton.disabled = this.isLoading;
+                span.textContent = this.isLoading ? 'מעבד...' : 'שלח';
+            }
+        }
+
+        // Initialize the website
+        document.addEventListener('DOMContentLoaded', () => {
+            new AIWebsite();
+        });
+    </script>
+</body>
+</html>
