@@ -548,7 +548,7 @@
     <div class="container">
         <header class="header">
             <h1>AI Solutions Hub</h1>
-            <p class="tagline">פתרונות בינה מלאכותית ברמה אנטרפרייז</p>
+            <p class="tagline">פתרונות בינה מלאכותית</p>
             <p class="subtitle">טכנולוגיה מתקדמת • אבטחה גבוהה • ביצועים מעולים</p>
         </header>
 
@@ -646,16 +646,24 @@
                 });
 
                 // Message sending
-                document.getElementById('sendButton').addEventListener('click', () => this.sendMessage());
-                document.getElementById('messageInput').addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                });
+                const sendButton = document.getElementById('sendButton');
+                const messageInput = document.getElementById('messageInput');
+                
+                if (sendButton) {
+                    sendButton.addEventListener('click', () => this.sendMessage());
+                }
+                
+                if (messageInput) {
+                    messageInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendMessage();
+                        }
+                    });
 
-                // Auto-resize textarea
-                document.getElementById('messageInput').addEventListener('input', this.autoResizeTextarea);
+                    // Auto-resize textarea
+                    messageInput.addEventListener('input', this.autoResizeTextarea);
+                }
             }
 
             updateInitialTime() {
@@ -664,7 +672,10 @@
                     hour: '2-digit', 
                     minute: '2-digit' 
                 });
-                document.getElementById('initialTime').textContent = timeString;
+                const initialTimeElement = document.getElementById('initialTime');
+                if (initialTimeElement) {
+                    initialTimeElement.textContent = timeString;
+                }
             }
 
             autoResizeTextarea(e) {
@@ -690,7 +701,10 @@
                 
                 // Reset and focus
                 this.resetConversation(title);
-                document.getElementById('messageInput').focus();
+                const messageInput = document.getElementById('messageInput');
+                if (messageInput) {
+                    messageInput.focus();
+                }
             }
 
             resetConversation(solutionName) {
@@ -713,6 +727,8 @@
 
             async sendMessage() {
                 const input = document.getElementById('messageInput');
+                if (!input) return;
+                
                 const message = input.value.trim();
                 
                 if (!message || this.isProcessing) return;
@@ -786,6 +802,8 @@
 
             addMessage(content, sender) {
                 const messagesContainer = document.getElementById('chatMessages');
+                if (!messagesContainer) return;
+                
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${sender}-message`;
                 
@@ -807,6 +825,8 @@
 
             showLoadingMessage() {
                 const messagesContainer = document.getElementById('chatMessages');
+                if (!messagesContainer) return;
+                
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'message ai-message loading-message';
                 loadingDiv.id = 'loadingMessage';
@@ -837,8 +857,10 @@
 
             updateSendButton() {
                 const button = document.getElementById('sendButton');
-                button.disabled = this.isProcessing;
-                button.textContent = this.isProcessing ? 'מעבד...' : 'שלח';
+                if (button) {
+                    button.disabled = this.isProcessing;
+                    button.textContent = this.isProcessing ? 'מעבד...' : 'שלח';
+                }
             }
         }
 
@@ -846,3 +868,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             new AIHub();
         });
+    </script>
+</body>
+</html>
