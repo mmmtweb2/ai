@@ -629,7 +629,7 @@
             constructor() {
                 this.currentSolution = null;
                 this.isProcessing = false;
-                this.apiKey = 'gsk_d559de115b6f4c01a1af6d7122f5b4b4';
+                this.apiKey = 'd559de115b6f4c01a1af6d7122f5b4b4';
                 this.initializeSystem();
             }
 
@@ -769,7 +769,7 @@
 
                 const systemPrompt = systemPrompts[this.currentSolution] || "אתה מומחה AI מקצועי. ספק תשובות איכותיות ומדויקות.";
 
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                const response = await fetch('https://api.aimlapi.com/chat/completions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
