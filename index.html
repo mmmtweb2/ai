@@ -761,14 +761,14 @@
 
             async processAIRequest(userMessage) {
                 const systemPrompts = {
-                    analysis: "אתה מומחה בניתוח נתונים ובינה עסקית עם התמחות באנליטיקה מתקדמת. ספק תובנות מעמיקות ומקצועיות.",
+                    analysis: "אתה מומחה בניתוח נתונים ובינה עסקית עם התמחות באנליטיקה מתקדמת. ספק תובנות מעמיקות ומקצועיות בעברית.",
                     writing: "אתה מנהל תוכן ויוצר דיגיטלי מומחה. צור תוכן איכותי, מעורר השראה ומקצועי בעברית.",
-                    programming: "אתה ארכיטקט תוכנה ומפתח senior עם ניסיון בטכנולוגיות מתקדמות. ספק פתרונות טכניים מעולים.",
-                    strategy: "אתה יועץ אסטרטגי עסקי עם ניסיון בחברות Fortune 500. ספק ייעוץ מקצועי ומבוסס נתונים."
+                    programming: "אתה ארכיטקט תוכנה ומפתח senior עם ניסיון בטכנולוגיות מתקדמות. ספק פתרונות טכניים מעולים בעברית.",
+                    strategy: "אתה יועץ אסטרטגי עסקי עם ניסיון בחברות Fortune 500. ספק ייעוץ מקצועי ומבוסס נתונים בעברית."
                 };
-
-                const systemPrompt = systemPrompts[this.currentSolution] || "אתה מומחה AI מקצועי. ספק תשובות איכותיות ומדויקות.";
-
+            
+                const systemPrompt = systemPrompts[this.currentSolution] || "אתה מומחה AI מקצועי. ספק תשובות איכותיות ומדויקות בעברית.";
+            
                 const response = await fetch('https://api.aimlapi.com/chat/completions', {
                     method: 'POST',
                     headers: {
@@ -776,21 +776,22 @@
                         'Authorization': `Bearer ${this.apiKey}`
                     },
                     body: JSON.stringify({
-                        model: 'llama-3.3-70b-versatile',
+                        model: "gpt-4o-mini",
                         messages: [
-                            { role: 'system', content: systemPrompt },
-                            { role: 'user', content: userMessage }
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: userMessage }
                         ],
-                        max_tokens: 2000,
+                        max_tokens: 1500,
                         temperature: 0.7
                     })
                 });
-
+            
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('API Error Response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
-
+            
                 const data = await response.json();
                 
                 if (!data.choices?.[0]?.message?.content) {
